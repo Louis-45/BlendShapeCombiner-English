@@ -1,86 +1,86 @@
-# BlendShapeCombiner
+# BlendShapeCombiner-English
 
-複数のブレンドシェイプを合成した新しいシェイプキーを追加し、新しいメッシュとして保存するUnityエディタ拡張です。
+This is a Unity editor extension that adds a new shape key that combines multiple blend shapes and saves it as a new mesh.
 
-係数を指定できるため、たとえば「瞳を小さくする」シェイプキーから「瞳を大きくする」シェイプキーを作ったり、0～100の範囲外に設定したウェイトを正規化することも可能です。
+You can specify coefficients, so you can create a "make the eyes smaller" shape key from a "make the eyes bigger" shape key, for example, or normalize weights set outside the range of 0 to 100.
 
-開発経緯としては、VRChat Avatars 3.0 のまばたき用シェイプキーが1つしか指定できない問題への対策が発端ですが、他の用途にも汎用的に用いることができます。
+The development background is the issue of only being able to specify one shape key for blinking in VRChat Avatars 3.0, but it can be used for other purposes as well.
 
 ![image](https://repository-images.githubusercontent.com/285993854/facec380-fc27-11ea-9588-d9cd6b608ba7)
 
-## 動作環境
+## Requirements
 
-Unity 2018.4 以降
+Unity 2018.4 or later
 
-## インポート手順
+## Import procedure
 
-### unitypackageをインポートする方法
+### How to import unitypackage
 
-[Releasesページ](https://github.com/chigirits/BlendShapeCombiner/releases) より最新版の `BlendShapeCombiner-vX.X.X.unitypackage` をダウンロードし、Unityにインポートする
+Download the latest version of `BlendShapeCombiner-vX.X.X.unitypackage` from the [Releases page](https://github.com/chigirits/BlendShapeCombiner/releases) and import it into Unity.
 
-### パッケージマネージャを用いる方法
+### How to use package manager
 
-1. インポート先プロジェクトの `Packages/manifest.json` をテキストエディタ等で開く
-2. `dependencies` オブジェクト内に以下の要素を追加
+1. Open `Packages/manifest.json` in a text editor for the project you want to import to.
+2. Add the following element to the `dependencies` object.
    
    ```
    "com.github.chigirits.blendshapecombiner": "https://github.com/chigirits/BlendShapeCombiner.git",
    ```
 
-## 使い方
+## Usage
 
-1. シーンにモデルを配置してください。
-2. 「メニュー/Chigiri/Create BlendShapeCombiner」を選択すると、ヒエラルキーのトップレベルに BlendShapeCombiner が配置されます。
-3. BlendShapeCombiner の `Target` に、操作対象となる SkinnedMeshRenderer（アバターの表情に適用する場合、一般的には Body オブジェクト）を指定してください。<br>
-   このとき、対象にアタッチされているメッシュが `Source Mesh` に自動的にセットされます。
+1. Place the model in the scene
+2. Select "Menu/Chigiri/Create BlendShapeCombiner" and the BlendShapeCombiner will be placed at the top level of the Hierarchy.
+3. Specify the SkinnedMeshRenderer to be manipulated in the `Target` of the BlendShapeCombiner. If applying to the avatar's facial expressions, generally specify the Body object.
+At this time, the mesh attached to the target is automatically set to `Source Mesh`.
    
    ![usage-01](https://user-images.githubusercontent.com/61717977/93739727-edafd580-fc23-11ea-983d-fd2c7836ebad.png)
-4. `Name` に作成するシェイプキーの名前を入力し、`Source [X]` から合成元のシェイプキーを選択してください。
+4. Enter the name of the shape key to be created in `Name` and select the source shape key from `Source [X]` to composite it.
    
-   - スケール係数（プルダウンの右にあるテキストボックスの数値）を `1` 以外にすることで、効果のかかり具合を調整することができます（後述の[スケール係数について](#スケール係数について)を参照）。
-   - 合成元となるシェイプキーの数を増減するには、各 `Source [X]` の左にあるゴミ箱アイコンや左最下部にある `+` ボタンを押してください。
-   - 作成するシェイプキー自体を増減するには、`New Keys` リストタブの右下にある `+` `-` を押してください（削除する際は事前に対象行を選択してください）。
+   - The degree of effect can be adjusted by setting the scaling factor (the value in the text box to the right of the pull-down menu) to a value other than `1`. (See Scaling Factor below for details.)
+   - To increase or decrease the number of source shape keys, press the trash can icon to the left of each `Source [X]` or the `+` button at the bottom left.
+   - To increase or decrease the number of shape keys to be created, press the `+` `-` buttons at the bottom right of the `New Keys` list tab (to delete, select the target row in advance).
    
    ![usage-02](https://user-images.githubusercontent.com/61717977/93739733-f2748980-fc23-11ea-9ff2-d3abe91057e0.png)
-5. `Process And Save As...` ボタンを押して、生成された新しいメッシュを保存してください。
+5. Press the "Process And Save As..." button to save the newly generated mesh.
    
    ![usage-03](https://user-images.githubusercontent.com/61717977/93739737-f4d6e380-fc23-11ea-9118-d287db6226ec.png)
 
-   保存が完了すると、`Target` の SkinnedMeshRenderer に新しいメッシュがアタッチされます。
-   この差し替えられたメッシュに追加されている新しいシェイプキーの値を変更してみて、期待どおりの効果がかかることを確認してください。
+   When the save is complete, the new mesh will be attached to the SkinnedMeshRenderer in `Target`.
+   Try changing the values of the new shape keys added to the replaced mesh to confirm that the expected effect is applied.
    
    ![usage-04](https://user-images.githubusercontent.com/61717977/93739742-f7393d80-fc23-11ea-8686-1493f870986c.png)
 
-## スケール係数について
+## About Scaling Factor
 
-スケール係数に `1` 以外を指定することで、シェイプキーのかかり具合を極端にしたり、逆方向にすることができます。
+By specifying a scaling factor other than `1`, you can greatly exaggerate or reverse the effect of a shape key.
 
-たとえば、瞳を小さくするシェイプキーの `scale` に `-1` を指定することで、瞳を大きくするシェイプキーを作成することができます。
+For example, by specifying `-1` for the `scale` of a shape key that reduces the size of the eyes, you can create a shape key that enlarges the eyes.
 
 ![usage-05](https://user-images.githubusercontent.com/61717977/92988185-1b9a6900-f504-11ea-84c4-aa234108caa5.png)
 
 ![usage-06](https://user-images.githubusercontent.com/61717977/92988187-1e955980-f504-11ea-8262-2dfc5dea82d2.png)
 
-他にも、たとえば「A:目を閉じる」と「B:目を閉じて口を開く」しかシェイプキーがないモデルに対して、Aの -1 スケール化シェイプキーをBに重ねがけすることで、口だけを開いた表情を作ることができるようになります。
+Furthermore, suppose there are only two shape keys available for a model, "A: Close eyes" and "B: Close eyes and open mouth." In that case, by overlaying the -1 scaled shape key of A onto B, you can create an expression where only the mouth is open.
 
-## ライセンス
+## License
 
 [MIT License](./LICENSE)
 
-- このソフトウェアは商用・非商用問わず無償で利用できますが、無保証です。利用に際して発生する問題については、作者は一切の責任を負いません。
-- コードを再利用する際は、著作権表示と上記リンク先のライセンス条文を同梱する必要があります。詳しくは条文（英語）をお読みください。
+- This software is available for both commercial and non-commercial use free of charge but is not guaranteed. The author is not responsible for any issues that may arise from its use.
+- When reusing the code, you must include the copyright notice and the license terms from the link above. Please read the terms (in English) for more information.
 
-## 更新履歴
+## Version History
 
 - v1.2.0
-  - UIの改善
-    - カスタムUI実装
-    - Source Mesh を Target とは独立して保持し、リトライ時の手間を軽減
-    - 保存ダイアログの初期ディレクトリを Source Mesh と同一に
-    - Revert Target ボタンを追加
-    - ツールチップ表示
+  - UI improvements
+    - Implemented custom UI
+    - Maintains Source Mesh independently from Target to reduce the burden of retrying
+    - Set the initial directory of the save dialog to the same as the Source Mesh
+    - Added Revert Target button
+    - Added tooltip display
 - v1.1.0
-  - スケール係数プロパティを追加
-  - 複数シェイプキーの一括追加に対応
+  - Added scaling factor property
+  - Supports batch addition of multiple shape keys
 - v1.0.0
-  - 初回リリース
+  - First release
